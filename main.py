@@ -1,4 +1,5 @@
 from time_ import Time
+import sys
 
 
 def confirm(line):
@@ -37,12 +38,36 @@ def process_newline(BEG, END):
     return newline
 
             
+def error(error_msg = "error !!!\n Exiting....."):
+    print(error_msg)
+    exit()
+
+def main(argv):
+
+    filename = argv[1]
+    
+
+    move = input('forward or backward? f or b\n').strip(' ')
+    try:
+        assert move == 'f' or move == 'b' or move == 'F' or move == 'B'
+    except:
+        error('Invalid Entry !!! \n Exiting ....')
 
 
-def main():
 
-    newfile = open("/home/akku/Downloads/After We Collided (2020) [720p] [BluRay] [YTS.MX]/newsrt.srt", "w")
-    with open("subs", "r+") as file:
+
+    print('Enter the shift amount')
+    try:
+        shift_hours = int(input('hours : ').strip(' '))
+        shift_minutes = int(input('minutes : ').strip(' '))
+        shift_seconds = int(input('seconds : ').strip(' '))
+        shift_milliseconds = int(input('milliseconds : ').strip(' '))
+
+    except:
+        error('Invalid Entry !!! \n Exiting ....')
+
+    newfile = open("out", "w")
+    with open(filename, "r+") as file:
         i = 0
         for line in file:
             if confirm(line):
@@ -51,13 +76,21 @@ def main():
                 BEG.str_time(beg_time, sep_hour_min = ':', sep_min_sec = ':', sep_sec_millisec = ',')
                 END = Time()
                 END.str_time(end_time, sep_hour_min = ':', sep_min_sec = ':', sep_sec_millisec = ',')
-                BEG.add_time(seconds = 38, milliseconds = 500)
-                END.add_time(seconds = 38, milliseconds = 500)
+                if move == 'f' or move == 'F':
+                    BEG.add_time(hours = shift_hours, minutes = shift_minutes, seconds = shift_seconds, milliseconds = shift_milliseconds)
+                    END.add_time(hours = shift_hours, minutes = shift_minutes, seconds = shift_seconds, milliseconds = shift_milliseconds)
+                else:
+
+                    BEG.sub_time(hours = shift_hours, minutes = shift_minutes, seconds = shift_seconds, milliseconds = shift_milliseconds)
+                    END.sub_time(hours = shift_hours, minutes = shift_minutes, seconds = shift_seconds, milliseconds = shift_milliseconds)
+
                 newline = process_newline(BEG, END)
                 newfile.write(newline)
             else:
                 newfile.write(line)
 
+    print('change successful')
+
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv)

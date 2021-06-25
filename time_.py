@@ -156,7 +156,39 @@ class Time:
         self.minutes = (self.minutes + minutes + add_min_buff) % 60
         self.hours = (self.hours + hours + add_hour_buff)
 
+    def sub_time(self, hours = 0, minutes = 0, seconds = 0, milliseconds = 0):
+        now = (1000 - self.milliseconds) + milliseconds
+        milliseconds_now = (1000 - now) % 1000
+        if milliseconds_now > 0:
+            sec_red = (now) // 1000
+        else:
+            sec_red = (now) // 1000 - 1
 
+        now = (60 - self.seconds) + seconds + sec_red
+        seconds_now  = (60 - now) % 60
+        if seconds_now > 0:
+            min_red = (now) // 60
+        else: 
+            min_red = (now) // 60 - 1
+
+        now = (60 - self.minutes) + min_red + minutes
+        minutes_now = (60 - now) % 60
+        if minutes_now > 0:
+            hour_red = (now) // 60
+        else:
+            hour_red = (now) // 60 - 1
+
+        try:
+            assert(hour_red + hours <= self.hours)
+            self.milliseconds = milliseconds_now
+            self.seconds = seconds_now
+            self.minutes = minutes_now
+            self.hours -= (hours + hour_red)
+
+        except:
+            print('Invalid reduction time !!!')
+            print('Time going out of bounds')
+            print('Exiting.....')
 
 
 
@@ -178,11 +210,11 @@ class Time:
 
 def main():
 
-    t_ = Time()
-    t_.str_time("0*59--59>>999", sep_hour_min = '*', sep_min_sec = '--', sep_sec_millisec = '>>')
-    print(t_.get_time())
-    t_.add_time(seconds = 61)
-    print(t_.get_time())
+    t = Time()
+    t.str_time("23*44--28>>00", sep_hour_min = '*', sep_min_sec = '--', sep_sec_millisec = '>>')
+    print(t.get_time())
+    t.sub_time(hours = 12, minutes = 58, seconds = 45, milliseconds = 0)
+    print(t.get_time())
 
 
 if __name__ == "__main__":
