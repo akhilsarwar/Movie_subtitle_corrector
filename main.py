@@ -1,33 +1,5 @@
-class Time:
-    milliseconds = 0
-    minutes = 0
-    hours = 0
-    seconds = 0
+from time_ import Time
 
-    def __init__(self, h, m, s, milli, time_str):
-        self.hours, self.minutes, self.seconds, self.milliseconds = self.parse_time(time_str)
-
-    def get_time(self, h, m, s, milli):
-        time_str = ""
-        time_str = str(h) + ':' + str(m) + ':' + str(s) + ',' + str(milli)
-        return time_str
-    
-    def add_time(self, h, m, s, milli):
-        self.hours += h
-        self.minutes += m
-        slef.seconds += s
-        self.milliseconds += milli
-    
-    def parse_time(self, time_str):
-        parsed_list = time_str.split(':')
-        hours = parsed_list[0]
-        minutes = prased_list[1]
-        parse_seconds = parsed_list[2].split(',')
-        seconds = parse_seconds[0]
-        milliseconds = parse_seconds[1]
-        return hours, minutes, seconds, milliseconds
-        
-        
 
 def confirm(line):
     colon_cnt  = 0
@@ -58,23 +30,34 @@ def extract_time(line):
     end_time = end_time.strip(' ')
     return beg_time, end_time
 
+
+def process_newline(BEG, END):
+    newline = ""
+    newline = str(BEG.get_time()) + ' ' + '-->' + ' ' + str(END.get_time()) + '\n'
+    return newline
+
             
 
 
 def main():
+
+    newfile = open("/home/akku/Downloads/After We Collided (2020) [720p] [BluRay] [YTS.MX]/newsrt.srt", "w")
     with open("subs", "r+") as file:
         i = 0
         for line in file:
-            #if i < 100:
-            #    print(line)
-            #    i+=1
-            #else:
-            #    break;
             if confirm(line):
                 beg_time, end_time = extract_time(line)
-                print(beg_time, end_time)
-                BEG_, END_ = Time(beg_time), Time(end_time)
-                BEG_.add(0, 0, )
+                BEG = Time()
+                BEG.str_time(beg_time, sep_hour_min = ':', sep_min_sec = ':', sep_sec_millisec = ',')
+                END = Time()
+                END.str_time(end_time, sep_hour_min = ':', sep_min_sec = ':', sep_sec_millisec = ',')
+                BEG.add_time(seconds = 38, milliseconds = 500)
+                END.add_time(seconds = 38, milliseconds = 500)
+                newline = process_newline(BEG, END)
+                newfile.write(newline)
+            else:
+                newfile.write(line)
+
 
 if __name__ == "__main__":
     main()
